@@ -92,8 +92,7 @@ def plot_2d_energy_levels(X, y, energy, v=None, l=None):
     xx, yy, F, k, K = energy
     if not v: vmin = vmax = None
     else: vmin, vmax = v
-    if not l: levels = None
-    else: levels = torch.arange(l[0], l[1], l[2])
+    levels = None if not l else torch.arange(l[0], l[1], l[2])
     plt.figure(figsize=(12, 10))
     plt.pcolormesh(xx.numpy(), yy.numpy(), F, vmin=vmin, vmax=vmax)
     plt.colorbar()
@@ -104,7 +103,8 @@ def plot_2d_energy_levels(X, y, energy, v=None, l=None):
     plt.axvline(color='0.55', lw=1)
     plt.axhline(color='0.55', lw=1)
     plt.axis([-1.5, 1.5, -1.5, 1.5])
-    ȳ = torch.zeros(K).int(); ȳ[k] = 1
+    ȳ = torch.zeros(K).int()
+    ȳ[k] = 1
     plt.title(f'Free energy F(x, y = {ȳ.tolist()})')
 
 
@@ -112,8 +112,7 @@ def plot_3d_energy_levels(X, y, energy, v=None, l=None, cbl=None):
     xx, yy, F, k, K = energy
     if not v: vmin = vmax = None
     else: vmin, vmax = v
-    if not l: levels = None
-    else: levels = torch.arange(l[0], l[1], l[2])
+    levels = None if not l else torch.arange(l[0], l[1], l[2])
     fig = plt.figure(figsize=(9.5, 6), facecolor='k')
     ax = fig.add_subplot(projection='3d')
     cnt = ax.contour(xx.numpy(), yy.numpy(), F, levels=levels, vmin=vmin, vmax=vmax)
@@ -125,12 +124,12 @@ def plot_3d_energy_levels(X, y, energy, v=None, l=None, cbl=None):
     vmin, vmax = cnt.get_clim()
     ax.set_zlim3d(vmin, vmax)
     norm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
-    if not cbl: cbl = l
-    else: cbl = torch.arange(cbl[0], cbl[1], cbl[2])
+    cbl = l if not cbl else torch.arange(cbl[0], cbl[1], cbl[2])
     sm = plt.cm.ScalarMappable(norm=norm, cmap=cnt.cmap)
     sm.set_array([])
     fig.colorbar(sm, ticks=cbl, ax=ax)
-    ȳ = torch.zeros(K).int(); ȳ[k] = 1
+    ȳ = torch.zeros(K).int()
+    ȳ[k] = 1
     plt.title(f'Free energy F(x, y = {ȳ.tolist()})')
     plt.tight_layout()
     return fig, ax
